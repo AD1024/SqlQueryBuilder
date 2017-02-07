@@ -20,6 +20,12 @@ class QueryBuilder():
 		self.pvMap = {} # values and column names
 		self.whereArgs = [] # where statments: K: str, V: str or other data types
 		self.tableName = None # table to alter
+		'''
+		Param for select
+		'''
+		self.selectOrder = ''
+		self.selectDistinct = False
+		self.selectLimit = None
 
 	def setAction(self, action):
 		self.action = action
@@ -43,6 +49,18 @@ class QueryBuilder():
 
 	def setTableName(self, name):
 		self.tableName = name
+		return self
+
+	def setSelectOrder(self, order):
+		self.selectOrder = 'ORDER BY ' + order
+		return self
+
+	def setSelectDistinct(self, bol):
+		self.selectDistinct = bol;
+		return self
+
+	def setSelectLimit(self, limit):
+		self.selectLimit = limit
 		return self
 
 	'''
@@ -70,7 +88,7 @@ class QueryBuilder():
 	def parseWhereStatment(self, dic):
 		if len(dic) == 0:
 			return ''
-		s = 'where '
+		s = 'WHERE '
 		for i in self.whereArgs:
 			if self.getType(i) == 'dict':
 				# current item is condition dictionary
@@ -84,13 +102,29 @@ class QueryBuilder():
 					else:
 						s += str(v)
 			else:
+				if self.getType(i) == 'list': # Use List to present IN
+					s += '('
+					for j in i:
+						s += str(j) + ','
+					s = s[0:len(s)-1]
+					s += ')'
+				elif self.getType(i) == 'set': # Use set to present BETWEEN
+					for j in i:
+						s += str(j) + ' AND '
+					s = s[0:len(s)-5]
 				# current item is logic expression
-				if i == 'and' or i == 'AND' or i =='a' or i =='A':
+				elif i == 'and' or i == 'AND' or i =='a' or i =='A':
 					s += 'AND'
 				elif i == 'or' or i == 'OR' or i == 'o' or i == 'O':
 					s += 'OR'
 				elif i == 'not' or i == 'NOT' or i == 'n' or i == 'N':
 					s += 'NOT'
+				elif i == 'in' or i == 'IN':
+					s += 'IN'
+				elif i == 'between' or i == 'BETWEEN':
+					s += 'BETWEEN'
+				else:
+					s += i
 			s += ' '
 		return s
 
@@ -127,7 +161,7 @@ class QueryBuilder():
 
 		if self.action == 'insert' or self.action == QueryConstants.ACTION_INSERT:
 			# Action Insert
-			if not self.checkParam():
+			if (not self.checkParam()) and len(self.params) != 0:
 				raise ParamValueNotMatchException()
 				return ''
 			if len(self.pvMap) != 0:
@@ -157,10 +191,11 @@ class QueryBuilder():
 						query += str(i)
 					query += ','
 				query = query[0:len(query)-1] + ')'
+				self.__init__()
 				return query
 		elif self.action == 'update' or self.action == QueryConstants.ACTION_UPDATE:
 			# Action update
-			if not self.checkParam():
+			if not self.checkParam() and len(self.values) != 0:
 				raise ParamValueNotMatchException()
 				return ''
 			query += 'UPDATE ' + self.tableName + ' SET '
@@ -178,17 +213,27 @@ class QueryBuilder():
 			if len(self.whereArgs) == 0: # if there isn't and where statment
 				return query
 			else:
-				query += self.parseWhereStatment(self.whereArgs)		
-				return query
+				query += self.parseWhereStatment(self.whereArgs)
+			self.__init__()
+			return query
 		elif self.action == 'delete' or self.action == QueryConstants.ACTION_DELETE:
 			# DELETE action
 			query += 'DELETE FROM ' + self.tableName + ' '
 			query += self.parseWhereStatment(self.whereArgs)
+			self.__init__()
 			return query
 		elif self.action == 'select' or self.action == QueryConstants.ACTION_SELECT:
 			# SELECT action
-			query += 'SELECT * FROM ' + self.tableName + ' '
+			if self.selectDistinct:
+				query += 'SELECT DISTINCT FROM ' + self.tableName + ' '
+			else:
+				query += 'SELECT * FROM ' + self.tableName + ' '
 			query += self.parseWhereStatment(self.whereArgs)
+			if self.selectOrder != '':
+				query += self.selectOrder
+			if not self.selectLimit is None:
+				query += ' ' + 'LIMIT' + ' ' + str(self.selectLimit)
+			self.__init__()
 			return query
 		elif self.action == 'create table' \
 				or self.action == QueryConstants.ACTION_CREATE_TABLE:
@@ -210,6 +255,5 @@ class QueryBuilder():
 					query += v
 				query += ',\n'
 			query += ')'
+			self.__init__()
 			return query
-
-		
