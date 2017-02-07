@@ -22,6 +22,7 @@ Current version support:
 QueryBuilder will accept SELECT statment. You just need to pass where statment(optional) to the builder instance and run **create()** method
 
 ### Example:
+
 	builder = QueryBuilder()
 	builder.setTableName('test')\
 			.setAction(QueryConstants.ACTION_SELECT)\
@@ -36,20 +37,25 @@ Also, **SELECT** statment can set *Order rules* , *Limit rules* and *Dictinct ru
 #### About WhereArgs
 WhereArgs is a *list* and it need to be written in following format:
 Provide that we use zero indexing, the value in even index need to be a dictionary, keys are column names and values are the value you want to pass to the where statment. And WhereArgs support using *BETWEEN* and *IN*. If you want to use *IN* keyword to specify the filter:
+
 	builder.setwhereArgs([<colname>,'in',[value1,value2,...]])
+
 And if you want to use *BETWEEN* keyword:
+
 	builder.setwhereArgs([<colname>,'between',{lowerbound,upperbound}])
 
 ## **INSERT** statment
 If you want to create an INSERT statment with this builder, values are required to be provided to the builder and the column names are optional. However, if you are considering to pass both column names and values, the length of two list is required to be exactly the same.
 
 **Example:**
+
 	builder = QueryBuilder()
 	query = builder.setTableName('qqq')\
 			.setAction(QueryConstants.ACTION_INSERT)\
 			.setParams(['col1','col2','col3'])\
 			.setValues([1,2,3])\
 			.create()
+
 Also, you can use dictionary to pass these values to the builder:
 	query = builder.setTableName('qqq')\
 			.setAction(QueryConstants.ACTION_INSERT)\
