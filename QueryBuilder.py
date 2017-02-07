@@ -37,6 +37,7 @@ class QueryBuilder():
 
 	def setTableName(self, name):
 		self.tableName = name
+		return self
 
 	'''
 	@return data type of var
