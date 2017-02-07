@@ -1,12 +1,12 @@
 from QueryBuilder import QueryBuilder
 import QueryConstants
+import DataTypes
 
 if __name__ == '__main__':
 	builder = QueryBuilder()
 	q = builder.setTableName('test')\
-	.setAction('update')\
-	.setValues([1,2,3])\
-	.setParams(['a','b','c'])\
-	.setwhereArgs([{'a':1},'and',{'b':'2'},'or',{'c':3}])\
+	.setAction(QueryConstants.ACTION_CREATE_TABLE)\
+	.setKVMap({'1':DataTypes.MYSQL_TXT,'b':[DataTypes.MYSQL_FLOAT(1,4),'AUTO INCREMENT']})\
 	.create()
 	print(q)
+	# print(DataTypes.MYSQL_FLOAT(1,3))
