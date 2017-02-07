@@ -22,10 +22,11 @@ Current version support:
 QueryBuilder will accept SELECT statment. You just need to pass where statment(optional) to the builder instance and run **create()** method
 
 ### Example:
-	Builder = QueryBuilder()
-	Builder.setAction(QueryConstants.ACTION_SELECT)\
-	.setWhereArgs([{'FirstName':'Mike'},'and', 'Gender':'M'])\
-	.create()
+	builder = QueryBuilder()
+	builder.setTableName('test')\
+			.setAction(QueryConstants.ACTION_SELECT)\
+			.setwhereArgs([{'FirstName':'Mike'},'and', {'Gender':'M'}])\
+			.create()
 
 Also, **SELECT** statment can set *Order rules* , *Limit rules* and *Dictinct rule* by using:
 	builder.setSelectLimit(<int>)
