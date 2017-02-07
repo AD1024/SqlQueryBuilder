@@ -1,6 +1,3 @@
-
-# CPP选手并不会python,有错误的地方请dalao们指正，谢谢了Orz
-
 '''
 	Exceptions
 '''
@@ -41,6 +38,9 @@ class QueryBuilder():
 	def setTableName(self, name):
 		self.tableName = name
 
+	'''
+	@return data type of var
+	'''
 	def getType(self, var):
 		if isinstance(var, str):
 			return 'str'
@@ -49,12 +49,17 @@ class QueryBuilder():
 		elif isinstance(var, float):
 			return 'float'
 
+	'''
+	@param dict where statment dictionary
+	@return where statment
+	'''
 	def parseWhereStatment(self, dic):
 		if len(dic) == 0:
 			return ''
 		s = 'where '
 		for i in self.whereArgs:
 			if isinstance(i, dict):
+				# current item is condition dictionary
 				for j in i:
 					s += str(j) + '='
 					v = i[j]
@@ -65,12 +70,12 @@ class QueryBuilder():
 					else:
 						s += str(v)
 			else:
+				# current item is logic expression
 				if i == 'and' or i == 'AND':
 					s += 'AND'
 				else:
 					s += 'OR'
 			s += ' '
-		# s = s[0:len(s) - 5]
 		return s
 
 	def checkParam(self):
