@@ -27,6 +27,8 @@ class QueryBuilder():
 		self.selectDistinct = False
 		self.selectLimit = None
 
+		self.where = 'WHERE '
+
 	def setAction(self, action):
 		self.action = action
 		return self
@@ -80,54 +82,55 @@ class QueryBuilder():
 			return 'dict'
 		elif isinstance(var, set):
 			return 'set'
+		elif isinstance(var, tuple):
+			return 'tuple'
 
 	'''
 	@param dict where statment dictionary
 	@return where statment
 	'''
 	def parseWhereStatment(self, dic):
-		if len(dic) == 0:
-			return ''
-		s = 'WHERE '
-		for i in self.whereArgs:
+		for i in dic:
 			if self.getType(i) == 'dict':
 				# current item is condition dictionary
 				for j in i:
-					s += str(j) + '='
+					self.where += str(j) + '='
 					v = i[j]
 					if self.getType(v) == 'str':
-						s += '\'' + v + '\''
+						self.where += '\'' + v + '\''
 					elif self.getType(v) == 'int':
-						s += str(v)
+						self.where += str(v)
 					else:
-						s += str(v)
+						self.where += str(v)
+			elif self.getType(i) == 'list': # Use List to present IN
+					self.where += '('
+					for j in i:
+						self.where += str(j) + ','
+					self.where = self.where[0:len(s)-1]
+					self.where += ')'
+			elif self.getType(i) == 'set': # Use set to present BETWEEN
+					for j in i:
+						self.where += str(j) + ' AND '
+					self.where = self.where[0:len(s)-5]
+			elif self.getType(i) == 'tuple':
+					self.where += '('
+					self.parseWhereStatment(i)
+					self.where += ')'
+			elif i == 'and' or i == 'AND' or i =='a' or i =='A':
+				self.where += 'AND'
+			elif i == 'or' or i == 'OR' or i == 'o' or i == 'O':
+				self.where += 'OR'
+			elif i == 'not' or i == 'NOT' or i == 'n' or i == 'N':
+				self.where += 'NOT'
+			elif i == 'in' or i == 'IN':
+				self.where += 'IN'
+			elif i == 'between' or i == 'BETWEEN':
+				self.where += 'BETWEEN'
 			else:
-				if self.getType(i) == 'list': # Use List to present IN
-					s += '('
-					for j in i:
-						s += str(j) + ','
-					s = s[0:len(s)-1]
-					s += ')'
-				elif self.getType(i) == 'set': # Use set to present BETWEEN
-					for j in i:
-						s += str(j) + ' AND '
-					s = s[0:len(s)-5]
-				# current item is logic expression
-				elif i == 'and' or i == 'AND' or i =='a' or i =='A':
-					s += 'AND'
-				elif i == 'or' or i == 'OR' or i == 'o' or i == 'O':
-					s += 'OR'
-				elif i == 'not' or i == 'NOT' or i == 'n' or i == 'N':
-					s += 'NOT'
-				elif i == 'in' or i == 'IN':
-					s += 'IN'
-				elif i == 'between' or i == 'BETWEEN':
-					s += 'BETWEEN'
-				else:
-					s += i
-			s += ' '
-		return s
-
+				self.where += i
+			self.where += ' '
+		self.where = self.where[0:len(self.where)-1]
+		return self.where
 
 	'''
 	 Check avability of column names and values
