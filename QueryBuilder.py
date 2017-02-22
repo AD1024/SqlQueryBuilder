@@ -7,8 +7,11 @@ import DataTypes
 class ParamValueNotMatchException(Exception):
 	def __init__(self, err = 'Param Values mismatch'):
 		Exception.__init__(self, err)
-class TableNotSetExcetion(Exception):
+class TableNotSetException(Exception):
 	def __init__(self, err = 'Table name is not set'):
+		Exception.__init__(self, err)
+class ParamErrorExecption(Exception):
+	def __init__(self, err = 'DB Name is not set'):
 		Exception.__init__(self, err)
 
 # Major Implementation
@@ -20,6 +23,7 @@ class QueryBuilder():
 		self.pvMap = {} # values and column names
 		self.whereArgs = [] # where statments: K: str, V: str or other data types
 		self.tableName = None # table to alter
+		self.dbName = None
 		'''
 		Param for select
 		'''
@@ -63,6 +67,10 @@ class QueryBuilder():
 
 	def setSelectLimit(self, limit):
 		self.selectLimit = limit
+		return self
+
+	def setDBName(self, name):
+		self.dbName = name
 		return self
 
 	'''
@@ -159,7 +167,7 @@ class QueryBuilder():
 		query = ''
 		# If there isn't a table name in the query then raise exception
 		if not self.tableName or self.tableName is None:
-			raise TableNotSetExcetion()
+			raise TableNotSetException()
 			return ''
 
 		if self.action == 'insert' or self.action == QueryConstants.ACTION_INSERT:
@@ -177,7 +185,7 @@ class QueryBuilder():
 				for i in iter(self.values):
 					query += str(i) + ','
 				query = query[0:len(query)-1]
-				query += ')'
+				query += ');'
 				return query
 			else:
 				query += '('
@@ -193,7 +201,7 @@ class QueryBuilder():
 					else:
 						query += str(i)
 					query += ','
-				query = query[0:len(query)-1] + ')'
+				query = query[0:len(query)-1] + ');'
 				self.__init__()
 				return query
 		elif self.action == 'update' or self.action == QueryConstants.ACTION_UPDATE:
@@ -214,7 +222,7 @@ class QueryBuilder():
 			query = query[0:len(query)-1]
 			query += ' '
 			if len(self.whereArgs) == 0: # if there isn't and where statment
-				return query
+				return query + ';'
 			else:
 				query += self.parseWhereStatment(self.whereArgs)
 			self.__init__()
@@ -222,7 +230,7 @@ class QueryBuilder():
 		elif self.action == 'delete' or self.action == QueryConstants.ACTION_DELETE:
 			# DELETE action
 			query += 'DELETE FROM ' + self.tableName + ' '
-			query += self.parseWhereStatment(self.whereArgs)
+			query += self.parseWhereStatment(self.whereArgs) + ';'
 			self.__init__()
 			return query
 		elif self.action == 'select' or self.action == QueryConstants.ACTION_SELECT:
@@ -236,6 +244,7 @@ class QueryBuilder():
 				query += self.selectOrder
 			if not self.selectLimit is None:
 				query += ' ' + 'LIMIT' + ' ' + str(self.selectLimit)
+			query += ';'
 			self.__init__()
 			return query
 		elif self.action == 'create table' \
@@ -257,6 +266,21 @@ class QueryBuilder():
 				else:
 					query += v
 				query += ',\n'
-			query += ')'
+			query += ');'
 			self.__init__()
+			return query
+		elif self.action == 'create database' or self.action == QueryConstants.ACTION_CREATE_DB:
+			if self.dbName is None:
+				raise ParamErrorExecption()
+				return ''
+			query = 'CREATE DATABASE ' + self.dbName + ';'
+			return query
+		elif self.action == 'drop database' or QueryConstants.ACTION__DROP_DB:
+			if self.dbName is None:
+				raise ParamErrorExecption()
+				return ''
+			query = 'DROP DATABASE' + self.dbName
+			return query
+		elif self.action == 'drop table' or self.action == QueryConstants.ACTION_DROP_TABLE:
+			query = 'DROP TABLE' + self.tableName
 			return query

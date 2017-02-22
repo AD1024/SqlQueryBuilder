@@ -108,7 +108,7 @@ query = builder.setTableName('qqq')\
 
 *KVMap* is a dictionary, whose keys are column names and values are values of those columns
 
-## Update Statement
+## UPDATE Statement
 
 Update statment is similar to *INSERT* statment. The only difference is that **setParams()** will tell the builder which columns are needed to be changed and **setValues()** will tell the builder what value you want them to maintain.
 
@@ -145,4 +145,6 @@ builder.setTableName('test')\
 	   .setwhereArgs('N',{'col1':1},'A',{'col2':2})\
 	   .create()
 ```
+
+## CREATE TABLE Statment
 
