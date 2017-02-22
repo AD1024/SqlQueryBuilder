@@ -18,6 +18,12 @@ if __name__ == '__main__':
 	   .setwhereArgs([{'col1':0},'O',{'col2':10}])\
 	   .create()
 
+	insertQueryTest = builder.setTableName('Test')\
+                .setKVMap({'col1':1, 'col2': 2, 'name':'Mike He'})\
+                .setAction(QueryConstants.ACTION_INSERT)\
+                .create()
+	print(insertQueryTest)
+
 	print(query)
 	print(qq)
 	# print(DataTypes.MYSQL_FLOAT(1,3))

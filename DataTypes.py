@@ -53,11 +53,11 @@ def MysqlcreateFloat(typ, s, d):
 		return 'DOUBLE(' + str(s) + ',' + str(d) + ')'
 	elif typ == 'DE':
 		return 'DECIMAL(' + str(s) + ',' + str(d) + ')'
-def MYSQL_FLOAT(s, d):
+def MYSQL_FLOAT(s, d=6):
 	return MysqlcreateFloat('F',s,d)
-def MYSQL_DOUBLE(s,d):
+def MYSQL_DOUBLE(s,d=6):
 	return MysqlcreateFloat('D',s,d)
-def MYSQL_DEC(s,d):
+def MYSQL_DEC(s,d=6):
 	return MysqlcreateFloat('DE',s,d)
 
 # Mysql DateTime

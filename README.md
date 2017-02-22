@@ -148,3 +148,35 @@ builder.setTableName('test')\
 
 ## CREATE TABLE Statment
 
+Create table is a simple action. Therefore it can be called by invoking *builder.setAction(QueryConstants.ACTION_CREATE_TABLE)* and set your column names and values into a dictionary.
+
+### About DataTypes
+Full datatypes will not be shown in this document. So if you want to know all of them, you can open *DataTypes.py* to see those constants and built-in functions.
+
+In this QueryBuilder, built-in datatypes supports datatypes of MYSQL and SqlServer.
+
+#### Common Options
+ 
+ - Auto increment: AUTO_INC
+ - Primary Key: PRIM_KEY
+
+#### Mysql Support
+
+ * Text and Strings
+ - varchar(255) MYSQL_VARCHAR
+ - char(255) MYSQL_CHAR
+ - TEXT MYSQL_TXT
+ - TinyText MYSQL_STXT
+ - BLOB MYSQL_BLOB
+and so on...
+
+#### SqlServer Support
+I am lazy. Thus please check those constants in *DataTypes.py*
+
+**Example**
+```python
+query = builder.setAction(QueryConstants.ACTION_CREATE_TABLE)\
+        .setTableName('TableTest')\
+        .setKVMap({'col1':DataTypes.MYSQL_TXT, 'col2':MYSQL_INT(1024),'UserName': MYSQL_STXT})\
+        .create()
+```

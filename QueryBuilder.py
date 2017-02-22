@@ -226,7 +226,7 @@ class QueryBuilder():
 			else:
 				query += self.parseWhereStatment(self.whereArgs)
 			self.__init__()
-			return query
+			return query + ';'
 		elif self.action == 'delete' or self.action == QueryConstants.ACTION_DELETE:
 			# DELETE action
 			query += 'DELETE FROM ' + self.tableName + ' '
