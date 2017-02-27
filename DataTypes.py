@@ -19,7 +19,7 @@ def MYSQL_ENUM(lis):
 		else:
 			Q += str(i)
 		Q += ','
-	Q = Q[0:len(Q)-1]
+	Q = Q[0:len(Q)-1] + ')'
 	return Q
 
 # MYSQL int

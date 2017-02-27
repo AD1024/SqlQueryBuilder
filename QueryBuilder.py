@@ -114,12 +114,12 @@ class QueryBuilder():
 					self.where += '('
 					for j in i:
 						self.where += str(j) + ','
-					self.where = self.where[0:len(s)-1]
+					self.where = self.where[0:len(self.where)-1]
 					self.where += ')'
 			elif self.getType(i) == 'set': # Use set to present BETWEEN
 					for j in i:
 						self.where += str(j) + ' AND '
-					self.where = self.where[0:len(s)-5]
+					self.where = self.where[0:len(self.where)-5]
 			elif self.getType(i) == 'tuple':
 					self.where += '('
 					self.parseWhereStatment(i)

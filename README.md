@@ -142,7 +142,7 @@ Delete statment is much more simple, because you only need to specify *WHERE* st
 ```python
 builder.setTableName('test')\
 	   .setAction(QueryConstants.ACTION_DELETE)\
-	   .setwhereArgs('N',{'col1':1},'A',{'col2':2})\
+	   .setwhereArgs(['N',{'col1':1},'A',{'col2':2}])\
 	   .create()
 ```
 
@@ -156,19 +156,19 @@ Full datatypes will not be shown in this document. So if you want to know all of
 In this QueryBuilder, built-in datatypes supports datatypes of MYSQL and SqlServer.
 
 #### Common Options
- 
- - Auto increment: AUTO_INC
- - Primary Key: PRIM_KEY
+
+- Auto increment: AUTO_INC
+- Primary Key: PRIM_KEY
 
 #### Mysql Support
 
- * Text and Strings
- - varchar(255) MYSQL_VARCHAR
- - char(255) MYSQL_CHAR
- - TEXT MYSQL_TXT
- - TinyText MYSQL_STXT
- - BLOB MYSQL_BLOB
-and so on...
+* Text and Strings
+- varchar(255) MYSQL_VARCHAR
+- char(255) MYSQL_CHAR
+- TEXT MYSQL_TXT
+- TinyText MYSQL_STXT
+- BLOB MYSQL_BLOB
+   and so on...
 
 #### SqlServer Support
 I am lazy. Thus please check those constants in *DataTypes.py*
