@@ -275,12 +275,12 @@ class QueryBuilder():
 				return ''
 			query = 'CREATE DATABASE ' + self.dbName + ';'
 			return query
-		elif self.action == 'drop database' or QueryConstants.ACTION__DROP_DB:
+		elif self.action == 'drop database' or self.action == QueryConstants.ACTION_DROP_DB:
 			if self.dbName is None:
 				raise ParamErrorExecption()
 				return ''
-			query = 'DROP DATABASE' + self.dbName
+			query = 'DROP DATABASE' + self.dbName + ';'
 			return query
 		elif self.action == 'drop table' or self.action == QueryConstants.ACTION_DROP_TABLE:
-			query = 'DROP TABLE' + self.tableName
+			query = 'DROP TABLE' + self.tableName + ';'
 			return query

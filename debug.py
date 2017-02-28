@@ -34,6 +34,11 @@ if __name__ == '__main__':
         .setKVMap({'col1':DataTypes.MYSQL_TXT, 'col2':DataTypes.MYSQL_INT(1024),'UserName': DataTypes.MYSQL_STXT})\
         .create()
 	print(query)
+        
+	qq = builder.setAction(QueryConstants.ACTION_DROP_TABLE)\
+				.setTableName("Drop Test")\
+				.create()
+	print(qq)
 	# print(qq)
 	# print(DataTypes.MYSQL_FLOAT(1,3))
 
